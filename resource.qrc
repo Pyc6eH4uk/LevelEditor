@@ -1,0 +1,21 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource>
+        <file>resource/default_cell.png</file>
+        <file>resource/empty_cell.png</file>
+        <file>resource/moving_cell.png</file>
+        <file>resource/surprise_cell.png</file>
+        <file>resource/timed_cell.png</file>
+        <file>resource/grass_cell.png</file>
+        <file>resource/star.png</file>
+        <file>resource/tree.png</file>
+        <file>resource/waterfall.png</file>
+
+        <file>resource/health_bonus.png</file>
+        <file>resource/rocket_bonus.png</file>
+        <file>resource/time_slow_bonus.png</file>
+
+        <file>resource/food_1.png</file>
+        <file>resource/food_2.png</file>
+        <file>resource/food_3.png</file>
+    </qresource>
+</RCC>
