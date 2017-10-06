@@ -8,6 +8,8 @@
 
 #include <QtWidgets/QGraphicsView>
 #include <QtCore/QJsonObject>
+#include <level/level_t.h>
+#include <level/level_generator_t.h>
 #include "Grass.h"
 #include "GridItemBuilder.h"
 
@@ -20,6 +22,7 @@ protected:
     BonusType _current_bonus_type;
     ObjectsType _current_food_type;
     bool _mouse_pressed;
+    level_generator_t _level_generator;
 
 public:
     SceneGraphicsView();
@@ -28,6 +31,8 @@ public:
     void set_width(int _width);
     int get_height() const;
     void set_height(int _height);
+
+    void set_level_generator(const level_generator_t &_level_generator);
 
     void set_current_cell_type(CellType _current_type);
     void set_current_bonus_type(BonusType _current_bonus_type);

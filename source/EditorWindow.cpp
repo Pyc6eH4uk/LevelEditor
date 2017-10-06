@@ -90,8 +90,13 @@ void EditorWindow::generateFileAction() {
     LevelSettingDialog levelSettingDialog;
 
     if (levelSettingDialog.exec() == QDialog::Accepted) {
-        _sceneGraphicsView->set_width(levelSettingDialog.width());
-        _sceneGraphicsView->set_height(levelSettingDialog.height());
+        //_sceneGraphicsView->set_width(levelSettingDialog.width());
+        //_sceneGraphicsView->set_height(levelSettingDialog.height());
+        level_generator_t generator(levelSettingDialog.grass(),
+                                    levelSettingDialog.relax(),
+                                    levelSettingDialog.trees(),
+                                    levelSettingDialog.stars());
+        _sceneGraphicsView->set_level_generator(generator);
         _sceneGraphicsView->generate();
     }
 }

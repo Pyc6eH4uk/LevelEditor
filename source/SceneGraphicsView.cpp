@@ -44,18 +44,54 @@ SceneGraphicsView::SceneGraphicsView() {
 }
 
 void SceneGraphicsView::generate() {
+    _level_generator.solve_level();
+    const int inf = (int) 1e9;
+    int min_x = inf;
+    int max_x = -inf;
+    int min_y = inf;
+    int max_y = -inf;
+    for (auto point : _level_generator.grasses()) {
+        min_x = std::min(min_x, point.x());
+        max_x = std::max(max_x, point.x());
+        min_y = std::min(min_y, point.y());
+        max_y = std::max(max_y, point.y());
+    }
+    _width = max_x - min_x + 1;
+    _height = max_y - min_y + 1;
+
     _scene.clear();
     _scene.setSceneRect(- 32, - 32, _width * 32 + 64, _height * 32 + 64 + 32);
     setMinimumWidth(std::min(_width * 32 + 32 * 3, 800));
 
+    auto grasses = _level_generator.grasses();
+    std::set<point_t> grassesSet(grasses.begin(), grasses.end());
+
     for (int i = 0; i < _width; ++i) {
         for (int j = 0; j < _height; ++j) {
-            CellType cellType = static_cast<CellType> (rand() % CellType::COUNT_CELL);
-            Grass *cell = _gridItemBuilder.buildCell(i, j, cellType);
-            _scene.addItem(cell);
-
-            if (cellType == EMPTY_CELL) continue;
+            if (grassesSet.count(point_t(i + min_x, j + min_y))) {
+                CellType cellType = CellType::DEFAULT_CELL;
+                Grass *cell = _gridItemBuilder.buildCell(i, j, cellType);
+                _scene.addItem(cell);
+            } else {
+                CellType cellType = CellType::EMPTY_CELL;
+                Grass *cell = _gridItemBuilder.buildCell(i, j, cellType);
+                _scene.addItem(cell);
+            }
         }
+    }
+
+    for (auto tree : _level_generator.trees()) {
+        int i = tree.x() - min_x;
+        int j = tree.y() - min_y;
+        Objects *new_cell = _gridItemBuilder.buildFood(i, j, ObjectsType::TREES);
+        _scene.addItem(new_cell);
+    }
+
+    for (auto star : _level_generator.stars()) {
+        int i = star.x() - min_x;
+        int j = star.y() - min_y;
+        Objects *new_cell = _gridItemBuilder.buildFood(i, j, ObjectsType::STARS);
+        _scene.addItem(new_cell);
     }
 }
 
@@ -293,4 +329,8 @@ void SceneGraphicsView::load(QJsonObject jsonObject) {
         );
         _scene.addItem(cell);
     }
+}
+
+void SceneGraphicsView::set_level_generator(const level_generator_t &_level_generator) {
+    SceneGraphicsView::_level_generator = _level_generator;
 }

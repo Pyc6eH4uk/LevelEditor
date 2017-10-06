@@ -6,12 +6,13 @@ project(foaleditor)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES main.cpp source/Grass.cpp source/Grass.h source/GridItemBuilder.cpp source/GridItemBuilder.h source/SceneGraphicsView.cpp source/SceneGraphicsView.h source/EditorWindow.cpp source/EditorWindow.h source/LevelSettingDialog.cpp source/LevelSettingDialog.h source/Bonus.cpp source/Bonus.h source/GridItem.cpp source/GridItem.h source/Objects.cpp source/Objects.h)
+set(SOURCE_FILES main.cpp source/Grass.cpp source/Grass.h source/GridItemBuilder.cpp source/GridItemBuilder.h source/SceneGraphicsView.cpp source/SceneGraphicsView.h source/EditorWindow.cpp source/EditorWindow.h source/LevelSettingDialog.cpp source/LevelSettingDialog.h source/Bonus.cpp source/Bonus.h source/GridItem.cpp source/GridItem.h source/Objects.cpp source/Objects.h
+        level/level_generator_t.cpp level/level_t.cpp level/point_t.cpp level/square_t.cpp)
 add_executable(foaleditor ${SOURCE_FILES} resource.qrc)
 
 # qt5
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_PREFIX_PATH /home/gdhsnlvr/Qt/5.9/gcc_64/lib/cmake)
+set(CMAKE_PREFIX_PATH /home/gdhsnlvr/Qt/5.9.2/gcc_64/lib/cmake)
 find_package( Qt5Core REQUIRED )
 find_package( Qt5Widgets REQUIRED )
 find_package( Qt5Gui REQUIRED )

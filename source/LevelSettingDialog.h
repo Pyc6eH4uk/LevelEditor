@@ -15,15 +15,19 @@ class LevelSettingDialog : public QDialog {
     Q_OBJECT
 protected:
     QFormLayout *m_formLayout;
-    QLineEdit *m_widthLineEdit;
-    QLineEdit *m_heightLineEdit;
+    QLineEdit *m_grassLineEdit;
+    QLineEdit *m_relaxLineEdit;
+    QLineEdit *m_treesLineEdit;
+    QLineEdit *m_starstLineEdit;
     QDialogButtonBox *m_buttonBox;
 
 public:
     LevelSettingDialog();
 
-    int width();
-    int height();
+    int grass();
+    int relax();
+    int trees();
+    int stars();
 };
 
 
