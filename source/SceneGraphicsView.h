@@ -23,6 +23,8 @@ protected:
     ObjectsType _current_food_type;
     bool _mouse_pressed;
     level_generator_t _level_generator;
+    int _center_offset_x;
+    int _center_offset_y;
 
 public:
     SceneGraphicsView();

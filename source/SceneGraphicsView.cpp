@@ -65,6 +65,8 @@ void SceneGraphicsView::generate() {
     auto grasses = _level_generator.grasses();
     std::set<point_t> grassesSet(grasses.begin(), grasses.end());
 
+    _center_offset_x = min_x;
+    _center_offset_y = min_y;
     for (int i = 0; i < _width; ++i) {
         for (int j = 0; j < _height; ++j) {
             if (grassesSet.count(point_t(i + min_x, j + min_y))) {
@@ -238,13 +240,11 @@ void SceneGraphicsView::set_current_food_type(ObjectsType _current_food_type) {
 }
 
 QJsonObject SceneGraphicsView::save() {
-    level_optimizator_t level_optimizator(_level_generator.grasses_set(), 16);
-    level_optimizator.calculate();
-
     std::vector<Grass*> cells;
     std::vector<Bonus*> bonuses;
     std::vector<Objects*> foods;
 
+    Grass *center = nullptr;
     for (auto item : items()) {
         Grass *cell = dynamic_cast<Grass *>(item);
         if (cell) {
@@ -267,8 +267,8 @@ QJsonObject SceneGraphicsView::save() {
     QJsonArray cellsArray;
     for (Grass* cell : cells) {
         QJsonObject cellObject;
-        cellObject["x"] = cell->get_x();
-        cellObject["y"] = cell->get_y();
+        cellObject["x"] = cell->get_x() + _center_offset_x;
+        cellObject["y"] = cell->get_y() + _center_offset_y;
         cellObject["type"] = (int) cell->get_type();
         cellsArray.push_back(cellObject);
     }
@@ -276,8 +276,8 @@ QJsonObject SceneGraphicsView::save() {
     QJsonArray bonusesArray;
     for (Bonus* bonus : bonuses) {
         QJsonObject cellObject;
-        cellObject["x"] = bonus->get_x();
-        cellObject["y"] = bonus->get_y();
+        cellObject["x"] = bonus->get_x() + _center_offset_x;
+        cellObject["y"] = bonus->get_y() + _center_offset_y;
         cellObject["type"] = (int) bonus->get_type();
         bonusesArray.push_back(cellObject);
     }
@@ -285,8 +285,8 @@ QJsonObject SceneGraphicsView::save() {
     QJsonArray foodArray;
     for (Objects* cell : foods) {
         QJsonObject cellObject;
-        cellObject["x"] = cell->get_x();
-        cellObject["y"] = cell->get_y();
+        cellObject["x"] = cell->get_x() + _center_offset_x;
+        cellObject["y"] = cell->get_y() + _center_offset_y;
         cellObject["type"] = (int) cell->get_type();
         foodArray.push_back(cellObject);
     }

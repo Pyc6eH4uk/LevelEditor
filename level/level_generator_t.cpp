@@ -14,6 +14,7 @@ level_generator_t::level_generator_t(int grass_count, int relax_count, int tree_
     m_tree_count = tree_count;
     m_star_count = star_count;
     m_directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    reset_seed();
 }
 
 int level_generator_t::point_index_in_path(point_t point) const {
