@@ -50,3 +50,13 @@ bool point_t::operator==(const point_t &p) const {
 bool point_t::operator<(const point_t &p) const {
     return m_y < p.m_y || (m_y == p.m_y && m_x < p.m_x);
 }
+
+std::vector<point_t> point_t::near() const {
+    static std::vector<point_t> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+    std::vector<point_t> result;
+    for (auto dir : directions) {
+        result.push_back(*this + dir);
+    }
+    return result;
+}

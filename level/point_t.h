@@ -6,6 +6,8 @@
 #define CROSSROAD_LEVEL_POINT_T_H
 
 
+#include <vector>
+
 class point_t {
 protected:
     int m_x;
@@ -22,6 +24,7 @@ public:
     void set_y(int y);
 
     int distance(const point_t &p) const;
+    std::vector<point_t> near() const;
 
     point_t operator + (const point_t &p) const;
     point_t operator - (const point_t &p) const;

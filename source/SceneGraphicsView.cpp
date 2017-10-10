@@ -13,6 +13,7 @@
 #include <cmath>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonArray>
+#include <level/level_optimizator_t.h>
 
 SceneGraphicsView::SceneGraphicsView() {
     _scene.setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -39,8 +40,6 @@ SceneGraphicsView::SceneGraphicsView() {
     _current_cell_type = COUNT_CELL;
     _current_bonus_type = COUNT_BONUS;
     _current_food_type = COUNT_OBJECTS;
-
-    generate();
 }
 
 void SceneGraphicsView::generate() {
@@ -239,6 +238,9 @@ void SceneGraphicsView::set_current_food_type(ObjectsType _current_food_type) {
 }
 
 QJsonObject SceneGraphicsView::save() {
+    level_optimizator_t level_optimizator(_level_generator.grasses_set(), 16);
+    level_optimizator.calculate();
+
     std::vector<Grass*> cells;
     std::vector<Bonus*> bonuses;
     std::vector<Objects*> foods;

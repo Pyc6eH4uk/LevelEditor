@@ -49,6 +49,6 @@ void square_t::set_h(int h) {
 }
 
 bool square_t::intersect(const square_t &s) const {
-    return s.m_x >= m_x + m_w || s.m_x + s.m_w <= m_x ||
-            s.m_y >= m_y + m_h || s.m_y + s.m_h <= m_y;
+    return !(s.m_x >= m_x + m_w || s.m_x + s.m_w <= m_x ||
+            s.m_y >= m_y + m_h || s.m_y + s.m_h <= m_y);
 }

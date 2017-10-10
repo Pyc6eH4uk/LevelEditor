@@ -50,32 +50,40 @@ std::vector<point_t> level_generator_t::get_near_points(point_t point) const {
     return near_points;
 }
 
-bool level_generator_t::generate_path_can_find_path(point_t from, point_t to, point_t parent) {
+bool level_generator_t::generate_path_can_find_path(point_t direction, point_t start, point_t end) {
     std::set<point_t> forbidden;
     for (auto point : m_grass_path) {
-        if (point == to || point == parent) continue;
-
-        forbidden.insert(point);
         for (auto near : get_near_points(point)) {
             forbidden.insert(near);
         }
     }
-
-    if (forbidden.count(from)) {
-        return false;
+    for (auto point : m_grass_path) {
+        forbidden.insert(point);
     }
+    for (auto point : get_near_points(start)) {
+        forbidden.erase(point);
+    }
+    for (auto point : get_near_points(direction)) {
+        forbidden.erase(point);
+    }
+    forbidden.insert(direction);
+    forbidden.insert(end);
 
     std::set<point_t> used;
     std::queue<point_t> q;
-    q.push(from);
-    used.insert(from);
+    q.push(direction);
+    used.insert(direction);
 
     while (!q.empty()) {
+        if (q.size() > 1000) {
+            return false;
+        }
+
         point_t current = q.front();
         q.pop();
 
         for (auto near : get_near_points(current)) {
-            if (near == to) {
+            if (near == start) {
                 return true;
             }
 
@@ -92,6 +100,7 @@ bool level_generator_t::generate_path_can_find_path(point_t from, point_t to, po
 }
 
 void level_generator_t::generate_path_dfs(point_t current, point_t start, int depth) {
+    std::cerr << "depth = " << depth << ", grass_count = " << m_grass_count << std::endl;
     if (depth == m_grass_count)
         return;
 
@@ -101,14 +110,46 @@ void level_generator_t::generate_path_dfs(point_t current, point_t start, int de
     auto near_points = get_near_points(current);
     std::random_shuffle(near_points.begin(), near_points.end());
 
+    bool found = false;
     for (auto point : near_points) {
-        if (point_has_bad_cells(point, 2)) {
+        if (point_has_bad_cells(point, 1)) {
             continue;
         }
 
         if (generate_path_can_find_path(point, start, current)) {
             generate_path_dfs(point, start, depth + 1);
+            found = true;
             break;
+        }
+    }
+
+    if (!found) {
+        std::cerr << "cant find" << std::endl;
+        const int count_back = 16;
+        if (m_grass_path.size() <= count_back) {
+            m_grass_set.clear();
+            m_grass_path.clear();
+            generate_path_dfs(start, start, 0);
+        } else {
+            for (int i = 0; i < count_back; i++) {
+                m_grass_set.erase(m_grass_path.back());
+                m_grass_path.pop_back();
+            }
+            depth -= count_back - 1;
+
+            near_points = get_near_points(m_grass_path.back());
+            std::random_shuffle(near_points.begin(), near_points.end());
+
+            for (auto point : near_points) {
+                if (point_has_bad_cells(point, 1)) {
+                    continue;
+                }
+
+                if (generate_path_can_find_path(point, start, current)) {
+                    generate_path_dfs(point, start, depth + 1);
+                    break;
+                }
+            }
         }
     }
 }
@@ -157,6 +198,7 @@ void level_generator_t::relax_path() {
     boundary.insert(boundary.end(), m_grass_path.begin(), m_grass_path.end());
 
     for (int t = 0; t < m_relax_count; t++) {
+        std::cerr << "relax = " << t << ", relax_count = " << m_relax_count << std::endl;
         while (true) {
             int random_index = (int) (rand() % boundary.size());
             point_t current = boundary[random_index];
@@ -249,6 +291,7 @@ void level_generator_t::solve_level() {
     relax_path();
     add_trees();
     add_stars();
+    m_star_set.insert({0, 0});
 }
 
 std::vector<point_t> level_generator_t::grasses() const {
@@ -274,4 +317,8 @@ void level_generator_t::set_seed(int seed) {
 
 int level_generator_t::seed() const {
     return m_seed;
+}
+
+std::set<point_t> level_generator_t::grasses_set() const {
+    return m_grass_set;
 }

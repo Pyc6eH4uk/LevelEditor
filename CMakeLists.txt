@@ -7,7 +7,7 @@ project(foaleditor)
 set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCE_FILES main.cpp source/Grass.cpp source/Grass.h source/GridItemBuilder.cpp source/GridItemBuilder.h source/SceneGraphicsView.cpp source/SceneGraphicsView.h source/EditorWindow.cpp source/EditorWindow.h source/LevelSettingDialog.cpp source/LevelSettingDialog.h source/Bonus.cpp source/Bonus.h source/GridItem.cpp source/GridItem.h source/Objects.cpp source/Objects.h
-        level/level_generator_t.cpp level/level_t.cpp level/point_t.cpp level/square_t.cpp)
+        level/level_generator_t.cpp level/level_t.cpp level/point_t.cpp level/square_t.cpp level/level_optimizator_t.cpp level/level_optimizator_t.h)
 add_executable(foaleditor ${SOURCE_FILES} resource.qrc)
 
 # qt5

@@ -32,6 +32,7 @@ public:
     void solve_level();
 
     std::vector<point_t> grasses() const;
+    std::set<point_t> grasses_set() const;
     std::vector<point_t> trees() const;
     std::vector<point_t> stars() const;
     int seed() const;
@@ -42,7 +43,7 @@ protected:
     std::vector<point_t> get_near_points(point_t point) const;
 
     int find_distance(point_t from, point_t to);
-    bool generate_path_can_find_path(point_t from, point_t to, point_t parent);
+    bool generate_path_can_find_path(point_t direction, point_t start, point_t end);
     void generate_path_dfs(point_t current, point_t start, int depth);
     void generate_path();
     void relax_path();
