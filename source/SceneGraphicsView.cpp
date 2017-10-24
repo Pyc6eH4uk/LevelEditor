@@ -240,6 +240,9 @@ void SceneGraphicsView::set_current_food_type(ObjectsType _current_food_type) {
 }
 
 QJsonObject SceneGraphicsView::save() {
+    level_optimizator_t optimizator(_level_generator.grasses_set());
+    optimizator.calculate();
+
     std::vector<Grass*> cells;
     std::vector<Bonus*> bonuses;
     std::vector<Objects*> foods;
@@ -263,38 +266,55 @@ QJsonObject SceneGraphicsView::save() {
     }
 
     QJsonObject jsonObject;
+    QJsonObject hero;
+    hero["x"] = 0;
+    hero["y"] = 0;
 
-    QJsonArray cellsArray;
-    for (Grass* cell : cells) {
-        QJsonObject cellObject;
-        cellObject["x"] = cell->get_x() + _center_offset_x;
-        cellObject["y"] = cell->get_y() + _center_offset_y;
-        cellObject["type"] = (int) cell->get_type();
-        cellsArray.push_back(cellObject);
+    QJsonArray grass;
+    for (auto square : optimizator.getM_result_squares()) {
+        QJsonObject squareJSON;
+        squareJSON["x"] = square.x();
+        squareJSON["y"] = square.y();
+        squareJSON["w"] = square.w();
+        squareJSON["h"] = square.h();
+        grass.append(squareJSON);
     }
 
-    QJsonArray bonusesArray;
-    for (Bonus* bonus : bonuses) {
-        QJsonObject cellObject;
-        cellObject["x"] = bonus->get_x() + _center_offset_x;
-        cellObject["y"] = bonus->get_y() + _center_offset_y;
-        cellObject["type"] = (int) bonus->get_type();
-        bonusesArray.push_back(cellObject);
+    QJsonArray tree;
+    for (auto square : _level_generator.trees()) {
+        QJsonObject treeJSON;
+        treeJSON["x"] = square.x();
+        treeJSON["y"] = square.y();
+        tree.append(treeJSON);
     }
 
-    QJsonArray foodArray;
-    for (Objects* cell : foods) {
-        QJsonObject cellObject;
-        cellObject["x"] = cell->get_x() + _center_offset_x;
-        cellObject["y"] = cell->get_y() + _center_offset_y;
-        cellObject["type"] = (int) cell->get_type();
-        foodArray.push_back(cellObject);
+    QJsonArray star;
+    for (auto square : _level_generator.stars()) {
+        QJsonObject starJSON;
+        starJSON["x"] = square.x();
+        starJSON["y"] = square.y();
+        star.append(starJSON);
     }
 
-    jsonObject["width"] = _width;
-    jsonObject["height"] = _height;
-    jsonObject["cells"] = cellsArray;
-    jsonObject["objects"] = foodArray;
+    QJsonArray grassState;
+    for (auto pair : optimizator.getM_optimazed_squares()) {
+        QJsonObject stateJSON;
+        stateJSON["x"] = pair.first.x();
+        stateJSON["y"] = pair.first.y();
+
+        QJsonArray setJSON;
+        for (auto index : pair.second) {
+            setJSON.append(index);
+        }
+        stateJSON["set"] = setJSON;
+        grassState.append(stateJSON);
+    }
+
+    jsonObject["hero"] = hero;
+    jsonObject["tree"] = tree;
+    jsonObject["star"] = star;
+    jsonObject["grass"] = grass;
+    jsonObject["grassState"] = grassState;
 
     return jsonObject;
 }

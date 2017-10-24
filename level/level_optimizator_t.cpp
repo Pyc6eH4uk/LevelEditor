@@ -27,7 +27,6 @@ void level_optimizator_t::build_squares() {
     for (int i = 0; i < n; i++) {
         if (!m_grass.count(grass[i] + dir_left)) {
             m_scan_line[grass[i].y()] = grass[i].x();
-            m_boundary_points.push_back(grass[i]);
         }
         if (!m_grass.count(grass[i] + dir_right)) {
             square_t square;
@@ -36,9 +35,6 @@ void level_optimizator_t::build_squares() {
             square.set_w(grass[i].x() - m_scan_line[grass[i].y()] + 1);
             square.set_h(1);
             m_result_squares.push_back(square);
-        }
-        if (!m_grass.count(grass[i] + dir_down)) {
-            m_boundary_points.push_back(grass[i]);
         }
     }
 
@@ -62,17 +58,24 @@ void level_optimizator_t::optimize_idexes() {
                 m_optimazed_squares[grass[i]].push_back(j);
             }
         }
-        for (int j = 0; j < m_boundary_points.size(); j++) {
-            square_t square2;
-            square2.set_x(m_boundary_points[j].x());
-            square2.set_y(m_boundary_points[j].y());
-            square2.set_w(1);
-            square2.set_h(1);
-            if (square.intersect(square2)) {
-                m_optimazed_boundary[grass[i]].push_back(j);
-            }
-        }
         max_count = std::max(max_count, (int) m_optimazed_squares[grass[i]].size());
     }
-    std::cout << max_count << " \\ " << m_grass.size() << std::endl;
+
+    std::cerr << max_count << " \\ " << m_grass.size() << std::endl;
+}
+
+const std::vector<square_t> &level_optimizator_t::getM_result_squares() const {
+    return m_result_squares;
+}
+
+const std::vector<point_t> &level_optimizator_t::getM_boundary_points() const {
+    return m_boundary_points;
+}
+
+const std::map<point_t, std::vector<int>> &level_optimizator_t::getM_optimazed_squares() const {
+    return m_optimazed_squares;
+}
+
+const std::map<point_t, std::vector<int>> &level_optimizator_t::getM_optimazed_boundary() const {
+    return m_optimazed_boundary;
 }

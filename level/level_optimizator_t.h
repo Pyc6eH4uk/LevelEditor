@@ -27,6 +27,14 @@ public:
 
     void calculate();
 
+    const std::vector<square_t> &getM_result_squares() const;
+
+    const std::vector<point_t> &getM_boundary_points() const;
+
+    const std::map<point_t, std::vector<int>> &getM_optimazed_squares() const;
+
+    const std::map<point_t, std::vector<int>> &getM_optimazed_boundary() const;
+
 protected:
     void build_squares();
     void optimize_idexes();
